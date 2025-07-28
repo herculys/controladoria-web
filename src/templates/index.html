@@ -8,15 +8,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>Controladoria</h1>
+        <h1>CONTROLADORIA</h1>
         <form action="/" method="post" enctype="multipart/form-data">
-            <label for="panel_file">Selecione o arquivo do Aniel Painel de Serviços.xlsx:</label>
-            <input type="file" id="panel_file" name="panel_file" required>
+            <label for="panel_file">Selecione o arquivo do Aniel chamado <b>Painel de Serviços.xlsx:</b></label>
             <br>
-            <label for="office_file">Selecione o arquivo Office-boys.xlsx</label>
+            <input type="file" id="panel_file" name="panel_file" required>
+            <br><br><br>
+            <label for="office_file">Selecione o arquivo com a base dos office-boys chamado <b>Office-boys.xlsx</b></label>
+            <br>
             <input type="file" id="office_file" name="office_file" required>
             <br>
-            <label for="date_range">Enter Date Range:</label>
+            <br>
+            <br>
+            <label for="date_range">Insira a data referente ao relatório:</label>
             <input type="text" id="date_range" name="date_range" placeholder="ex: 18/07 à 24/07/2025" required>
 
             <button type="submit">Criar Relatório</button>

@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
-import os
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -31,31 +31,27 @@ def index():
     return render_template('index.html')
 
 def process_files(panel_file, office_file, intervalo_data):
+    # Leia diretamente dos objetos FileStorage
     df = pd.read_excel(panel_file, sheet_name="Sheet1", header=1, engine="openpyxl")
     df.columns = df.columns.str.strip()
-    
     office = pd.read_excel(office_file, engine="openpyxl")
     office.columns = office.columns.str.strip()
     mat2nome = dict(zip(office["Matrícula"], office["Nome"]))
-    
+
     pos_aq = df.columns.get_loc("Usuário do Encerramento")
     df.insert(pos_aq + 1, "Nome do Técnico", "")
     df.insert(pos_aq + 2, "Equipe", "")
-    
     df["Nome do Técnico"] = df["Usuário do Encerramento"].map(lambda mat: mat2nome.get(mat, "Técnico Operações"))
     df["Equipe"] = df["Usuário do Encerramento"].map(lambda mat: "Recolhimento" if mat in mat2nome else "Técnica")
-    
-    # Garante que a pasta existe antes de salvar/copiar
-    relatorio_dir = Path('Relatório Controladoria')
-    relatorio_dir.mkdir(exist_ok=True)
-    
-    # Crie e salve o arquivo de saída principal
-    output_file = relatorio_dir / "Painel_de_Servicos_modificado.xlsx"
-    df.to_excel(output_file, index=False)
 
-    # Crie o arquivo final para download
-    summary_file = relatorio_dir / "RECOLHIMENTO CONTROLADORIA.xlsx"
-    shutil.copy(output_file, summary_file)
+    # Gere o arquivo Excel na memória
+    output = BytesIO()
+    df.to_excel(output, index=False, sheet_name="Sheet1")
+    output.seek(0)
+
+    # Adicione a aba PRODUTIVIDADE
+    wb = load_workbook(output)
+    ws = wb.create_sheet("PRODUTIVIDADE")
     
     criterios = [
         ("Recolhimento", "Fechada Produtiva", "1 Tentativa", ["ESTOQUE - RECOLHIMENTO DE EQUIPAMENTO COMODATO", "ESTOQUE - RECOLHIMENTO DE EQUIPAMENTO COMODATO AGENDADO"]),
@@ -91,15 +87,14 @@ def process_files(panel_file, office_file, intervalo_data):
         "Quantidade": total
     }
     
-    wb = load_workbook(summary_file)
-    ws = wb.create_sheet("PRODUTIVIDADE")
-    
     for row in dataframe_to_rows(resultado_df, index=False, header=True):
         ws.append(row)
     
-    wb.save(summary_file)
-    print("Arquivo gerado:", output_file.exists(), output_file)
-    return str(summary_file.resolve())  # Retorne o caminho absoluto do arquivo correto
+    # Salve novamente na memória
+    final_output = BytesIO()
+    wb.save(final_output)
+    final_output.seek(0)
+    return final_output
 
 if __name__ == '__main__':
     app.run(debug=True)

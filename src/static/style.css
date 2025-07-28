@@ -3,10 +3,17 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
+    width: 600px;
 }
 
 h1 {
     color: #333;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+h1:hover {
+    color: #be02b4;
+    text-decoration: double;
 }
 
 form {
@@ -16,12 +23,17 @@ form {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+form:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* transform: translateY(2px); */
+}
+
 input[type="file"] {
     margin: 10px 0;
 }
 
 button {
-    background-color: #5cb85c;
+    background-color: #be02b4;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -30,7 +42,7 @@ button {
 }
 
 button:hover {
-    background-color: #4cae4c;
+    background-color: #fc00f0;
     transform: translateY(-2px);
     opacity: 0.6;
 }

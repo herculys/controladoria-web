@@ -16,13 +16,12 @@ Esta aplicação web foi desenvolvida para automatizar o processamento de dados 
 
 ```
 controladoria-web
-├── src
-│   ├── app.py                # Aplicação Flask principal
-│   ├── controladoria.py      # Lógica de processamento de dados e geração de gráficos
-│   ├── templates
-│   │   └── index.html        # Interface de upload de arquivos
-│   └── static
-│       └── style.css         # Estilos da interface web
+├── app.py                    # Aplicação Flask principal
+├── controladoria.py          # Lógica de processamento de dados e geração de gráficos
+├── templates/
+│   └── index.html            # Interface de upload de arquivos
+├── static/
+│   └── style.css             # Estilos da interface web
 ├── requirements.txt          # Dependências do projeto
 └── README.md                 # Documentação do projeto
 ```
@@ -60,7 +59,7 @@ A aplicação espera dois arquivos Excel:
 
 4. **Execute a aplicação**:
    ```bash
-   python src/app.py
+   python app.py
    ```
    A aplicação estará disponível em `http://127.0.0.1:5000`
 

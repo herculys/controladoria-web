@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controladoria File Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Controladoria</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label for="panel_file">Selecione o arquivo do Aniel Painel de Serviços.xlsx:</label>
+            <input type="file" id="panel_file" name="panel_file" required>
+            <br>
+            <label for="office_file">Selecione o arquivo Office-boys.xlsx</label>
+            <input type="file" id="office_file" name="office_file" required>
+            <br>
+            <label for="date_range">Enter Date Range:</label>
+            <input type="text" id="date_range" name="date_range" placeholder="ex: 18/07 à 24/07/2025" required>
+
+            <button type="submit">Criar Relatório</button>
+        </form>
+    </div>
+</body>
+</html>

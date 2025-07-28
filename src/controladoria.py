@@ -1,42 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 from pathlib import Path
 import shutil
+import os
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from io import BytesIO
 
-app = Flask(__name__)
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        panel_file = request.files['panel_file']
-        office_file = request.files['office_file']
-        intervalo_data = request.form['date_range']
-
-        os.makedirs('uploads', exist_ok=True)
-
-        if panel_file and office_file:
-            panel_path = Path('uploads') / panel_file.filename
-            office_path = Path('uploads') / office_file.filename
-
-            panel_file.save(panel_path)
-            office_file.save(office_path)
-
-            # Passe os caminhos reais para a função
-            process_files(str(panel_path), str(office_path), intervalo_data)
-            return redirect(url_for('index'))
-
-    return render_template('index.html')
-
-def process_files(panel_file, office_file, intervalo_data):
+def process_files(panel_file, office_file):
     # Leia diretamente dos objetos FileStorage
     df = pd.read_excel(panel_file, sheet_name="Sheet1", header=1, engine="openpyxl")
     df.columns = df.columns.str.strip()
     office = pd.read_excel(office_file, engine="openpyxl")
     office.columns = office.columns.str.strip()
     mat2nome = dict(zip(office["Matrícula"], office["Nome"]))
+
+    # Calcular o intervalo de datas automaticamente
+    df["Data/Hora Encerramento"] = pd.to_datetime(df["Data/Hora Encerramento"], errors='coerce')
+    data_min = df["Data/Hora Encerramento"].min()
+    data_max = df["Data/Hora Encerramento"].max()
+    
+    # Formatar o intervalo de datas
+    if pd.notna(data_min) and pd.notna(data_max):
+        if data_min.date() == data_max.date():
+            intervalo_data = data_min.strftime("%d/%m/%Y")
+        else:
+            intervalo_data = f"{data_min.strftime('%d/%m')} à {data_max.strftime('%d/%m/%Y')}"
+    else:
+        intervalo_data = "Data não disponível"
 
     pos_aq = df.columns.get_loc("Usuário do Encerramento")
     df.insert(pos_aq + 1, "Nome do Técnico", "")
@@ -95,6 +85,3 @@ def process_files(panel_file, office_file, intervalo_data):
     wb.save(final_output)
     final_output.seek(0)
     return final_output
-
-if __name__ == '__main__':
-    app.run(debug=True)

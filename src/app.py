@@ -8,10 +8,9 @@ def index():
     if request.method == 'POST':
         panel_file = request.files['panel_file']
         office_file = request.files['office_file']
-        intervalo_data = request.form['date_range']
 
         # Passe os objetos FileStorage diretamente
-        relatorio_bytesio = process_files(panel_file, office_file, intervalo_data)
+        relatorio_bytesio = process_files(panel_file, office_file)
         return send_file(
             relatorio_bytesio,
             as_attachment=True,

@@ -36,12 +36,12 @@ def process_files(panel_file, office_file):
 
     # Gere o arquivo Excel na memória
     output = BytesIO()
-    df.to_excel(output, index=False, sheet_name="Sheet1")
+    df.to_excel(output, index=False, sheet_name="BASE")
     output.seek(0)
 
     # Adicione a aba PRODUTIVIDADE
     wb = load_workbook(output)
-    ws = wb.create_sheet("PRODUTIVIDADE")
+    ws = wb.create_sheet("PRODUTIVIDADE", 0)  # Criar como primeira planilha (índice 0)
     
     criterios = [
         ("Recolhimento", "Fechada Produtiva", "1 Tentativa", ["ESTOQUE - RECOLHIMENTO DE EQUIPAMENTO COMODATO", "ESTOQUE - RECOLHIMENTO DE EQUIPAMENTO COMODATO AGENDADO"]),

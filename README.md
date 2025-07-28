@@ -1,58 +1,106 @@
 # Controladoria Web Application
 
-This project is a web interface for the Controladoria script, allowing users to select files for processing instead of hardcoding file paths in the script. The application is built using Flask and provides a user-friendly interface for file uploads.
+Esta aplicação web foi desenvolvida para automatizar o processamento de dados de controladoria, gerando relatórios de produtividade com análises visuais através de gráficos de pizza. A aplicação é construída com Flask e oferece uma interface amigável para upload de arquivos.
 
-## Project Structure
+## Funcionalidades
+
+- **Processamento automático de dados** de equipamentos e office-boys
+- **Cálculo automático de intervalo de datas** baseado nos dados do arquivo
+- **Geração de relatório Excel** com duas planilhas:
+  - **PRODUTIVIDADE**: Tabela de dados e 4 gráficos de pizza interativos
+  - **BASE**: Dados processados completos
+- **Gráficos visuais** com cores personalizadas e análise por equipe/tipo de solicitação
+- **Interface web simples** para upload de arquivos
+
+## Estrutura do Projeto
 
 ```
 controladoria-web
 ├── src
-│   ├── app.py                # Main entry point of the web application
-│   ├── controladoria.py      # Original logic of the Controladoria script
+│   ├── app.py                # Aplicação Flask principal
+│   ├── controladoria.py      # Lógica de processamento de dados e geração de gráficos
 │   ├── templates
-│   │   └── index.html        # HTML template for file selection
+│   │   └── index.html        # Interface de upload de arquivos
 │   └── static
-│       └── style.css         # CSS styles for the web interface
-├── requirements.txt          # List of dependencies
-└── README.md                 # Project documentation
+│       └── style.css         # Estilos da interface web
+├── requirements.txt          # Dependências do projeto
+└── README.md                 # Documentação do projeto
 ```
 
-## Setup Instructions
+## Requisitos dos Arquivos
 
-1. **Clone the repository**:
-   ```
+A aplicação espera dois arquivos Excel:
+
+1. **Painel de Serviços.xlsx**:
+   - Deve conter uma planilha "Sheet1" com cabeçalho na linha 2
+   - Colunas necessárias: "Data/Hora Encerramento", "Usuário do Encerramento", "Status", "Tipo de Serviço"
+
+2. **Office-boys.xlsx**:
+   - Deve conter colunas "Matrícula" e "Nome"
+   - Usado para mapear usuários a nomes e determinar equipes
+
+## Instruções de Instalação
+
+1. **Clone o repositório**:
+   ```bash
    git clone <repository-url>
    cd controladoria-web
    ```
 
-2. **Install dependencies**:
-   It is recommended to use a virtual environment. You can create one using:
-   ```
+2. **Crie um ambiente virtual** (recomendado):
+   ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   venv\Scripts\activate  # No Windows
    ```
-   Then install the required packages:
-   ```
+
+3. **Instale as dependências**:
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. **Run the application**:
-   Start the Flask web server by running:
-   ```
+4. **Execute a aplicação**:
+   ```bash
    python src/app.py
    ```
-   The application will be accessible at `http://127.0.0.1:5000`.
+   A aplicação estará disponível em `http://127.0.0.1:5000`
 
-## Usage Guidelines
+## Como Usar
 
-- Open your web browser and navigate to the provided URL.
-- Use the file upload form to select the necessary files for processing.
-- Follow the on-screen instructions to complete the process.
+1. Abra o navegador e acesse `http://127.0.0.1:5000`
+2. Selecione o arquivo "Painel de Serviços.xlsx"
+3. Selecione o arquivo "Office-boys.xlsx"
+4. Clique em "Criar Relatório"
+5. O arquivo "RECOLHIMENTO CONTROLADORIA.xlsx" será baixado automaticamente.
 
-## Contributing
+## Relatório Gerado
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+O relatório Excel contém:
 
-## License
+### Planilha PRODUTIVIDADE (primeira aba)
+- **Tabela de dados** com contagens por equipe, tipo e solicitação
+- **4 gráficos de pizza** (10cm x 6cm cada):
+  - Recolhimento - 1ª Tentativa (Produtiva vs Improdutiva)
+  - Técnica - 1ª Tentativa (Produtiva vs Improdutiva)
+  - Recolhimento - Revisita (Produtiva vs Improdutiva)
+  - Técnica - Revisita (Produtiva vs Improdutiva)
+- **Cores personalizadas**: Rosa forte (produtiva) e Azul escuro (improdutiva)
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+### Planilha BASE (segunda aba)
+- Dados completos processados com colunas adicionais:
+  - "Nome do Técnico" (mapeado do arquivo office-boys)
+  - "Equipe" (Recolhimento ou Técnica)
+
+## Tecnologias Utilizadas
+
+- **Flask**: Framework web Python
+- **Pandas**: Manipulação e análise de dados
+- **OpenPyXL**: Leitura/escrita de arquivos Excel e criação de gráficos
+- **HTML/CSS**: Interface do usuário
+
+## Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para submeter pull requests ou abrir issues para sugestões e melhorias.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.

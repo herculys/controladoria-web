@@ -4,6 +4,10 @@ import shutil
 import os
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.chart import PieChart, Reference
+from openpyxl.chart.label import DataLabelList
+from openpyxl.drawing.fill import ColorChoice, PatternFillProperties
+from openpyxl.drawing.colors import RGBPercent
 from io import BytesIO
 
 def process_files(panel_file, office_file):
@@ -79,6 +83,80 @@ def process_files(panel_file, office_file):
     
     for row in dataframe_to_rows(resultado_df, index=False, header=True):
         ws.append(row)
+    
+    # Criar os 4 gráficos de pizza usando dados diretamente da tabela
+    chart_positions = [
+        ("Recolhimento", "1 Tentativa", "H2", "Recolhimento - 1ª Tentativa"),
+        ("Técnica", "1 Tentativa", "P2", "Técnica - 1ª Tentativa"),
+        ("Recolhimento", "Revisita", "H18", "Recolhimento - Revisita"),
+        ("Técnica", "Revisita", "P18", "Técnica - Revisita")
+    ]
+    
+    # Encontrar as linhas correspondentes na tabela para cada gráfico
+    for i, (equipe, solicitacao, chart_pos, title) in enumerate(chart_positions):
+        # Encontrar as linhas da tabela que correspondem a este gráfico
+        produtiva_row = None
+        improdutiva_row = None
+        
+        # Procurar nas linhas da tabela (começando da linha 2, já que linha 1 é cabeçalho)
+        for row_num in range(2, ws.max_row + 1):
+            equipe_cell = ws.cell(row=row_num, column=2).value  # Coluna B - Equipe
+            tipo_cell = ws.cell(row=row_num, column=3).value    # Coluna C - Tipo
+            solicitacao_cell = ws.cell(row=row_num, column=4).value  # Coluna D - Solicitação
+            
+            if equipe_cell == equipe and solicitacao_cell == solicitacao:
+                if tipo_cell == "PRODUTIVA":
+                    produtiva_row = row_num
+                elif tipo_cell == "IMPRODUTIVA":
+                    improdutiva_row = row_num
+        
+        # Criar gráfico apenas se encontramos ambas as linhas
+        if produtiva_row and improdutiva_row:
+            # Criar gráfico de pizza
+            chart = PieChart()
+            chart.title = title
+            
+            # Usar dados diretamente da tabela
+            # Dados: coluna E (Quantidade) das linhas encontradas
+            data = Reference(ws, min_col=5, min_row=produtiva_row, max_row=improdutiva_row)
+            # Categorias: coluna C (Tipo) das linhas encontradas  
+            categories = Reference(ws, min_col=3, min_row=produtiva_row, max_row=improdutiva_row)
+            
+            chart.add_data(data)
+            chart.set_categories(categories)
+            
+            # Configurar tamanho do gráfico
+            chart.width = 10     # Largura 10cm
+            chart.height = 6     # Altura 6cm
+            
+            # Configurar rótulos com quantidade e porcentagem (sem nome da série)
+            chart.dataLabels = DataLabelList()
+            chart.dataLabels.showCatName = False  # Remove o nome da categoria
+            chart.dataLabels.showSerName = False  # Remove o nome da série
+            chart.dataLabels.showVal = True
+            chart.dataLabels.showPercent = True
+            
+            # Configurar cores das fatias
+            # PRODUTIVA = Rosa forte, IMPRODUTIVA = Azul escuro
+            if chart.series:
+                serie = chart.series[0]
+                if len(serie.dPt) == 0:
+                    # Adicionar pontos de dados se não existirem
+                    from openpyxl.chart.data_source import NumDataSource
+                    from openpyxl.chart.series import DataPoint
+                    
+                    # Ponto 0: PRODUTIVA (Rosa forte)
+                    pt0 = DataPoint(idx=0)
+                    pt0.graphicalProperties.solidFill = "E91E63"  # Rosa forte
+                    serie.dPt.append(pt0)
+                    
+                    # Ponto 1: IMPRODUTIVA (Azul escuro)
+                    pt1 = DataPoint(idx=1)
+                    pt1.graphicalProperties.solidFill = "1565C0"  # Azul escuro
+                    serie.dPt.append(pt1)
+            
+            # Posicionar o gráfico
+            ws.add_chart(chart, chart_pos)
     
     # Salve novamente na memória
     final_output = BytesIO()

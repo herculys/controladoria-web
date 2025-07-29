@@ -152,7 +152,7 @@ def process_files(panel_file, office_file):
                     
                     # Ponto 1: IMPRODUTIVA (Azul escuro)
                     pt1 = DataPoint(idx=1)
-                    pt1.graphicalProperties.solidFill = "000055"  # Azul escuro
+                    pt1.graphicalProperties.solidFill = "0000C6"  # Azul escuro
                     serie.dPt.append(pt1)
             
             # Posicionar o gráfico

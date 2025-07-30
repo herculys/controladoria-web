@@ -1,0 +1,22 @@
+# Ignora arquivos de bytecode do Python
+__pycache__/
+*.py[cod]
+
+# Ignora ambientes virtuais comuns
+venv/
+.env/
+
+# Ignora pasta src caso volte a existir
+src/
+
+# Ignora configurações locais do VS Code
+.vscode/
+
+# Ignora arquivos temporários
+*.log
+*.tmp
+
+# Ignora dados de testes ou caches
+*.sqlite3
+*.db
+.cache/

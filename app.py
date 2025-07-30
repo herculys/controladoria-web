@@ -1,3 +1,17 @@
+
+import sys
+import subprocess
+
+def install_requirements():
+    try:
+        import flask
+        import pandas
+        import openpyxl
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+
+install_requirements()
+
 from flask import Flask, render_template, request, send_file
 from controladoria import process_files
 

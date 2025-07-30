@@ -38,7 +38,7 @@ A aplicação espera dois arquivos Excel:
    - Deve conter colunas "Matrícula" e "Nome"
    - Usado para mapear usuários a nomes e determinar equipes
 
-## Instruções de Instalação
+## Instruções de Instalação e Execução
 
 1. **Clone o repositório**:
    ```bash
@@ -46,22 +46,17 @@ A aplicação espera dois arquivos Excel:
    cd controladoria-web
    ```
 
-2. **Crie um ambiente virtual** (recomendado):
+2. **(Opcional) Crie um ambiente virtual**:
    ```bash
    python -m venv venv
    venv\Scripts\activate  # No Windows
    ```
 
-3. **Instale as dependências**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Execute a aplicação**:
+3. **Execute a aplicação**:
    ```bash
    python app.py
    ```
-   A aplicação estará disponível em `http://127.0.0.1:5000`
+   > **Nota:** Não é necessário instalar manualmente as dependências. O próprio `app.py` verifica e instala automaticamente os pacotes necessários (`Flask`, `pandas`, `openpyxl`) ao iniciar.
 
 ## Como Usar
 

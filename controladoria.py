@@ -19,16 +19,19 @@ def process_files(panel_file, office_file):
     mat2nome = dict(zip(office["Matrícula"], office["Nome"]))
 
     # Calcular o intervalo de datas automaticamente
-    df["Data/Hora Encerramento"] = pd.to_datetime(df["Data/Hora Encerramento"], errors='coerce')
+    df["Data/Hora Encerramento"] = pd.to_datetime(df["Data/Hora Encerramento"], errors='coerce', dayfirst=True)
     data_min = df["Data/Hora Encerramento"].min()
     data_max = df["Data/Hora Encerramento"].max()
     
-    # Formatar o intervalo de datas
+    # Formatar o intervalo de datas (forçando formato DD/MM)
     if pd.notna(data_min) and pd.notna(data_max):
         if data_min.date() == data_max.date():
             intervalo_data = data_min.strftime("%d/%m/%Y")
         else:
-            intervalo_data = f"{data_min.strftime('%d/%m')} à {data_max.strftime('%d/%m/%Y')}"
+            # Garantir formato DD/MM a DD/MM/AAAA
+            data_inicio = data_min.strftime("%d/%m")
+            data_fim = data_max.strftime("%d/%m/%Y")
+            intervalo_data = f"{data_inicio} a {data_fim}"
     else:
         intervalo_data = "Data não disponível"
 

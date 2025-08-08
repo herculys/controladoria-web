@@ -86,10 +86,10 @@ def process_files(panel_file, office_file):
     
     # Criar os 4 gráficos de pizza usando dados diretamente da tabela
     chart_positions = [
-        ("Recolhimento", "1 Tentativa", "H2", "Recolhimento - 1ª Tentativa"),
-        ("Técnica", "1 Tentativa", "P2", "Técnica - 1ª Tentativa"),
-        ("Recolhimento", "Revisita", "H18", "Recolhimento - Revisita"),
-        ("Técnica", "Revisita", "P18", "Técnica - Revisita")
+        ("Recolhimento", "1 Tentativa", "G2", "Recolhimento - 1ª Tentativa"),
+        ("Técnica", "1 Tentativa", "M2", "Técnica - 1ª Tentativa"),
+        ("Recolhimento", "Revisita", "G14", "Recolhimento - Revisita"),
+        ("Técnica", "Revisita", "M14", "Técnica - Revisita")
     ]
     
     # Encontrar as linhas correspondentes na tabela para cada gráfico
